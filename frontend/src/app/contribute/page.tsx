@@ -42,7 +42,6 @@ const ContributePage = () => {
       icon: <FontAwesomeIconWrapper icon={faGithub} />,
       url: issue.url,
     }
-
     return (
       <React.Fragment key={issue.objectID}>
         <Card
@@ -53,8 +52,10 @@ const ContributePage = () => {
           projectLink={issue.projectUrl}
           summary={issue.summary}
           icons={filteredIcons}
+          labels={issue.labels}
           button={SubmitButton}
         />
+        {/* console.log("idx_labels",idx_labels) */}
         <DialogComp
           key={`modal-${index}`}
           isOpen={modalOpenIndex === index}

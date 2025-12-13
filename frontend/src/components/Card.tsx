@@ -25,6 +25,7 @@ const Card = ({
   social,
   tooltipLabel,
   timeline,
+  labels,
 }: CardProps) => {
   return (
     <div className="mx-auto mt-4 mb-2 flex w-full max-w-[95%] flex-col items-start rounded-md border-1 border-gray-200 bg-white p-4 md:max-w-6xl dark:border-gray-700 dark:bg-[#212529]">
@@ -125,6 +126,17 @@ const Card = ({
           </div>
         )}
 
+        {/* Labels section */}
+        {labels && labels.length > 0 && (
+          <div className="mt-2 flex flex-wrap gap-2">
+            {labels.map((label) => (
+              <span key={label} className="inline-flex items-center rounded-md bg-gray-100 px-2 py-1 text-sm text-gray-600 dark:bg-transparent dark:border-1 dark:border-gray-400 dark:text-gray-300">
+                {label}
+              </span>
+            ))}
+          </div>
+        )}
+
         {/* Flexible bottom row with contributors and action button */}
         <div className="flex w-full flex-col gap-3 sm:flex-row sm:items-center sm:justify-between sm:gap-0">
           {/* Contributors section */}
@@ -139,7 +151,7 @@ const Card = ({
           </div>
 
           {/* Action Button */}
-          <div className="flex sm:justify-end">
+          <div className="flex sm:justify-  end">
             <ActionButton tooltipLabel={tooltipLabel} url={button.url} onClick={button.onclick}>
               {button.icon}
               {button.label}
@@ -149,6 +161,7 @@ const Card = ({
       </div>
     </div>
   )
+
 }
 
 export default Card

@@ -32,6 +32,7 @@ export type CardProps = {
   tooltipLabel?: string
   topContributors?: Contributor[]
   url: string
+  labels?: string[]
 }
 
 type Stats = {
