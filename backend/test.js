@@ -9,6 +9,13 @@ const client = algoliasearch(
 // name of your index
 const indexName = "local_issues";
 
+/**
+ * Add the labels "good first issue" and "help wanted" to every record in the configured Algolia index.
+ *
+ * Iterates through all records via paginated searches and performs batched partial updates that set `idx_labels` to
+ * ["good first issue", "help wanted"] for each matching record. Updates are flushed in batches to avoid sending
+ * individual requests for every record.
+ */
 async function addLabelToAll() {
   let page = 0;
   const batchSize = 1000;
