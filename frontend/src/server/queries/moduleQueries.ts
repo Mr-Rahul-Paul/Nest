@@ -109,6 +109,10 @@ export const GET_MODULE_ISSUES = gql`
       name
       issuesCount(label: $label)
       availableLabels
+      issueDeadlines {
+        issueNumber
+        deadline
+      }
       issues(limit: $limit, offset: $offset, label: $label) {
         id
         number

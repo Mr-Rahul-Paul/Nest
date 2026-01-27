@@ -39,6 +39,9 @@ const IssuesPage = () => {
   const moduleData = data?.getModule
 
   const moduleIssues: IssueRow[] = useMemo(() => {
+    const deadlineMap = new Map(
+      (moduleData?.issueDeadlines || []).map((d) => [d.issueNumber, d.deadline])
+    )
     return (moduleData?.issues || []).map((i) => ({
       objectID: i.id,
       number: i.number,
@@ -47,6 +50,7 @@ const IssuesPage = () => {
       isMerged: i.isMerged,
       labels: i.labels || [],
       assignees: i.assignees || [],
+      deadline: deadlineMap.get(i.number) ?? null,
     }))
   }, [moduleData])
 
@@ -59,9 +63,9 @@ const IssuesPage = () => {
     }
 
     const labels = new Set<string>()
-    ;(moduleData?.issues || []).forEach((i) =>
-      (i.labels || []).forEach((l: string) => labels.add(l))
-    )
+      ; (moduleData?.issues || []).forEach((i) =>
+        (i.labels || []).forEach((l: string) => labels.add(l))
+      )
     return Array.from(labels).sort((a, b) => a.localeCompare(b))
   }, [moduleData])
 

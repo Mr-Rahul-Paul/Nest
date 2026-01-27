@@ -211,6 +211,12 @@ export type GitHubAuthResult = {
   user?: Maybe<AuthUserNode>;
 };
 
+export type IssueDeadlineNode = {
+  __typename?: 'IssueDeadlineNode';
+  deadline?: Maybe<Scalars['DateTime']['output']>;
+  issueNumber: Scalars['Int']['output'];
+};
+
 export type IssueNode = Node & {
   __typename?: 'IssueNode';
   assignees: Array<UserNode>;
@@ -310,6 +316,7 @@ export type ModuleNode = {
   id: Scalars['ID']['output'];
   interestedUsers: Array<UserNode>;
   issueByNumber?: Maybe<IssueNode>;
+  issueDeadlines: Array<IssueDeadlineNode>;
   issueMentees: Array<UserNode>;
   issues: Array<IssueNode>;
   issuesCount: Scalars['Int']['output'];

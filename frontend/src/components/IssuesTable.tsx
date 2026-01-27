@@ -71,6 +71,45 @@ const IssuesTable: React.FC<IssuesTableProps> = ({
     return count
   }
 
+  const getDeadlineBadge = (deadline: string | null | undefined) => {
+    if (!deadline) return null
+
+    const deadlineDate = new Date(deadline)
+    const today = new Date()
+    today.setHours(0, 0, 0, 0)
+    const deadlineDay = new Date(deadlineDate)
+    deadlineDay.setHours(0, 0, 0, 0)
+
+    const diffDays = Math.ceil((deadlineDay.getTime() - today.getTime()) / (1000 * 60 * 60 * 24))
+
+    let colorClass: string
+    let text: string
+
+    if (diffDays < 0) {
+      colorClass = 'bg-red-100 text-red-800 border-red-300 dark:bg-red-900 dark:text-red-200'
+      text = `Overdue (${deadlineDate.toLocaleDateString()})`
+    } else if (diffDays === 0) {
+      colorClass =
+        'bg-orange-100 text-orange-800 border-orange-300 dark:bg-orange-900 dark:text-orange-200'
+      text = 'Due today'
+    } else if (diffDays <= 3) {
+      colorClass =
+        'bg-yellow-100 text-yellow-800 border-yellow-300 dark:bg-yellow-900 dark:text-yellow-200'
+      text = `Due in ${diffDays} day${diffDays > 1 ? 's' : ''}`
+    } else {
+      colorClass = 'bg-blue-100 text-blue-800 border-blue-300 dark:bg-blue-900 dark:text-blue-200'
+      text = `Due ${deadlineDate.toLocaleDateString()}`
+    }
+
+    return (
+      <span
+        className={`inline-flex items-center rounded-md px-2 py-0.5 text-xs lg:rounded-lg lg:border ${colorClass}`}
+      >
+        {text}
+      </span>
+    )
+  }
+
   return (
     <div className="overflow-hidden rounded-lg border border-gray-200 dark:border-gray-700">
       <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
@@ -141,9 +180,10 @@ const IssuesTable: React.FC<IssuesTableProps> = ({
 
               {/* Labels */}
               <td className="block pb-3 lg:table-cell lg:px-6 lg:py-4">
-                {issue.labels && issue.labels.length > 0 ? (
-                  <div className="flex flex-wrap gap-1 lg:gap-2">
-                    {issue.labels.slice(0, maxVisibleLabels).map((label) => (
+                <div className="flex flex-wrap gap-1 lg:gap-2">
+                  {getDeadlineBadge(issue.deadline)}
+                  {issue.labels &&
+                    issue.labels.slice(0, maxVisibleLabels).map((label) => (
                       <span
                         key={label}
                         className="inline-flex items-center rounded-md bg-gray-100 px-2 py-0.5 text-xs text-gray-700 lg:rounded-lg lg:border lg:border-gray-400 lg:bg-transparent lg:hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-300 dark:lg:border-gray-300 dark:lg:hover:bg-gray-700"
@@ -151,13 +191,12 @@ const IssuesTable: React.FC<IssuesTableProps> = ({
                         {label}
                       </span>
                     ))}
-                    {issue.labels.length > maxVisibleLabels && (
-                      <span className="inline-flex items-center rounded-md bg-gray-100 px-2 py-0.5 text-xs text-gray-500 lg:rounded-lg lg:border lg:border-gray-400 lg:bg-transparent lg:text-gray-700 lg:hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-400 dark:lg:border-gray-300 dark:lg:text-gray-300 dark:lg:hover:bg-gray-700">
-                        +{issue.labels.length - maxVisibleLabels} more
-                      </span>
-                    )}
-                  </div>
-                ) : null}
+                  {issue.labels && issue.labels.length > maxVisibleLabels && (
+                    <span className="inline-flex items-center rounded-md bg-gray-100 px-2 py-0.5 text-xs text-gray-500 lg:rounded-lg lg:border lg:border-gray-400 lg:bg-transparent lg:text-gray-700 lg:hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-400 dark:lg:border-gray-300 dark:lg:text-gray-300 dark:lg:hover:bg-gray-700">
+                      +{issue.labels.length - maxVisibleLabels} more
+                    </span>
+                  )}
+                </div>
               </td>
 
               {/* Assignee */}

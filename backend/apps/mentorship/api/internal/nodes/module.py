@@ -16,6 +16,14 @@ from apps.mentorship.models.task import Task
 
 
 @strawberry.type
+class IssueDeadlineNode:
+    """Deadline info for an issue."""
+
+    issue_number: int
+    deadline: datetime | None
+
+
+@strawberry.type
 class ModuleNode:
     """A GraphQL node representing a mentorship module."""
 
@@ -157,6 +165,20 @@ class ModuleNode:
             .values_list("assigned_at", flat=True)
             .first()
         )
+
+    @strawberry.field
+    def issue_deadlines(self) -> list[IssueDeadlineNode]:
+        """Return deadlines for all issues in this module."""
+        tasks = (
+            Task.objects.filter(module=self, deadline_at__isnull=False)
+            .order_by("issue__number", "-assigned_at")
+            .distinct("issue__number")
+            .values("issue__number", "deadline_at")
+        )
+        return [
+            IssueDeadlineNode(issue_number=t["issue__number"], deadline=t["deadline_at"])
+            for t in tasks
+        ]
 
 
 @strawberry.input
