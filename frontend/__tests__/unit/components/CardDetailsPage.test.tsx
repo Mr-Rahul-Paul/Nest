@@ -262,7 +262,7 @@ jest.mock('components/RecentPullRequests', () => ({
 
 jest.mock('components/MentorshipPullRequest', () => ({
   __esModule: true,
-  default: ({ pr, ...props }: { pr: PullRequest; [key: string]: unknown }) => (
+  default: ({ pr, ...props }: { pr: PullRequest;[key: string]: unknown }) => (
     <div data-testid="pull-request-item" {...props}>
       MentorshipPullRequest: {pr.title}
     </div>
@@ -552,7 +552,7 @@ describe('CardDetailsPage', () => {
       author: mockUser,
       body: 'Milestone description',
       closedIssuesCount: 5,
-      createdAt: 1672531200, // 2023-01-01T00:00:00Z
+      createdAt: 1672531200,
       openIssuesCount: 2,
       repositoryName: 'test-repo',
       state: 'open',
