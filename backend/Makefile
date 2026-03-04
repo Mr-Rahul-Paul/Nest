@@ -132,7 +132,7 @@ generate-sdk:
 		-i "/local/build/openapi.json" \
 		-g typescript-fetch \
 		-o "/local/build/sdk-typescript" \
-		--additional-properties "npmVersion=$$(echo $(API_VERSION) | tr '-' '.'),supportsES6=true"
+		--additional-properties "npmName=@owasp/nest-sdk,npmVersion=$$(echo $(API_VERSION) | tr '-' '.'),supportsES6=true"
 	@echo "SDK generated at build/sdk-typescript"
 
 load-data:
