@@ -12,6 +12,7 @@ class Command(BaseCommand):
     help = "Write OpenAPI schema for REST API v0 to a JSON file."
 
     def add_arguments(self, parser):
+        """Add arguments to the command."""
         parser.add_argument(
             "--output",
             "-o",
@@ -20,6 +21,7 @@ class Command(BaseCommand):
         )
 
     def handle(self, *args, **options):
+        """Handle the command."""
         schema = api.get_openapi_schema()
         payload = dict(schema) if hasattr(schema, "keys") else schema
         out = options["output"]

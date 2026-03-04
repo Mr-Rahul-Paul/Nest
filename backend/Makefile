@@ -128,7 +128,7 @@ generate-sdk:
 	@echo "Generating SDK (version $(API_VERSION))..."
 	@docker run --rm \
 		-v $(CURDIR):/local \
-		openapitools/openapi-generator-cli@v7.2.0 generate \
+		openapitools/openapi-generator-cli:v7.2.0 generate \
 		-i "/local/build/openapi.json" \
 		-g typescript-fetch \
 		-o "/local/build/sdk-typescript" \

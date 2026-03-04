@@ -456,6 +456,9 @@ jobs:
     name: Generate SDKs
     env:
       API_VERSION: ${{ needs.set-release-version.outputs.api_version }}
+    if: |
+      github.repository == 'OWASP/Nest' &&
+      github.event_name == 'release'
     needs:
       - run-backend-tests
       - set-release-version
