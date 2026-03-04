@@ -1,6 +1,7 @@
 __pycache__
 .ash_history
 .bash_history
+build/
 .cache
 .coverage
 .cursor/rules/snyk_rules.mdc

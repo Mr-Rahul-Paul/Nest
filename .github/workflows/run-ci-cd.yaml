@@ -393,6 +393,7 @@ jobs:
     name: Set release version
     outputs:
       release_version: ${{ steps.set.outputs.release_version }}
+      api_version: ${{ steps.set.outputs.api_version }}
     permissions: {}
     runs-on: ubuntu-latest
     steps:
@@ -401,8 +402,16 @@ jobs:
         run: |
           if [ -n "${{ github.event.release.tag_name }}" ]; then
             echo "release_version=${{ github.event.release.tag_name }}" >> $GITHUB_OUTPUT
+            # If tag looks like vYYYY-MM-DD, use that for api_version
+            if echo "${{ github.event.release.tag_name }}" | grep -Eq '^v[0-9]{4}-[0-9]{2}-[0-9]{2}$'; then
+              TAG="${{ github.event.release.tag_name }}"
+              echo "api_version=${TAG#v}" >> $GITHUB_OUTPUT
+            else
+              echo "api_version=$(date '+%Y-%m-%d')" >> $GITHUB_OUTPUT
+            fi
           else
             echo "release_version=$(date '+%y.%-m.%-d')-${GITHUB_SHA::7}" >> $GITHUB_OUTPUT
+            echo "api_version=$(date '+%Y-%m-%d')" >> $GITHUB_OUTPUT
           fi
     timeout-minutes: 5
 
@@ -442,6 +451,79 @@ jobs:
 
       - name: Run Infrastructure tests
         run: make test-infrastructure
+
+  generate-sdks:
+    name: Generate SDKs
+    env:
+      API_VERSION: ${{ needs.set-release-version.outputs.api_version }}
+    needs:
+      - run-backend-tests
+      - set-release-version
+    permissions:
+      contents: read
+    runs-on: ubuntu-latest
+    services:
+      db:
+        image: pgvector/pgvector:pg16
+        env:
+          POSTGRES_DB: nest_db
+          POSTGRES_PASSWORD: nest_user_password
+          POSTGRES_USER: nest_user
+        options: >-
+          --health-cmd="pg_isready -U nest_user -d nest_db -h localhost -p 5432"
+          --health-interval=5s
+          --health-timeout=5s
+          --health-retries=5
+        ports:
+          - 5432:5432
+      cache:
+        image: redis:8.0.5-alpine3.21
+        options: >-
+          --health-cmd="redis-cli ping"
+          --health-interval=5s
+          --health-retries=5
+          --health-timeout=5s
+        ports:
+          - 6379:6379
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+
+      - name: Setup Backend environment
+        uses: ./.github/workflows/setup-backend-environment
+        with:
+          db_username: nest_user
+          db_name: nest_db
+
+      - name: Generate OpenAPI Spec
+        run: |
+          mkdir -p build
+          docker run --rm \
+            -v ${{ github.workspace }}/build:/home/owasp/build \
+            --env-file backend/.env.example \
+            --network host \
+            -e API_VERSION=$API_VERSION \
+            -e DJANGO_DB_HOST=localhost \
+            -e DJANGO_REDIS_AUTH_ENABLED=False \
+            -e DJANGO_REDIS_HOST=localhost \
+            owasp/nest:test-backend-latest \
+            sh -c '
+              python manage.py migrate > /dev/null &&
+              python manage.py dump_openapi --output /home/owasp/build/openapi.json
+            '
+
+      - name: Generate SDK
+        run: |
+          make generate-sdk \
+            API_VERSION=$API_VERSION \
+            OPENAPI_SPEC_FILE=build/openapi.json
+
+      - name: Upload TypeScript SDK Archive
+        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f
+        with:
+          name: nest-sdk-typescript-${{ env.API_VERSION }}
+          path: build/sdk-typescript
+    timeout-minutes: 10
 
   build-staging-images:
     name: Build Staging Images
@@ -1225,6 +1307,7 @@ jobs:
       NEST_HOST_IP_ADDRESS: ${{ secrets.NEST_HOST_IP_ADDRESS }}
       NEST_SSH_PRIVATE_KEY_PATH: ${{ vars.NEST_SSH_PRIVATE_KEY_PATH }}
       RELEASE_VERSION: ${{ needs.set-release-version.outputs.release_version }}
+      API_VERSION: ${{ needs.set-release-version.outputs.api_version }}
     environment: production
     if: |
       github.event_name == 'release' &&
@@ -1270,6 +1353,7 @@ jobs:
           DJANGO_REDIS_HOST: ${{ secrets.DJANGO_REDIS_HOST }}
           DJANGO_REDIS_PASSWORD: ${{ secrets.DJANGO_REDIS_PASSWORD }}
           DJANGO_RELEASE_VERSION: ${{ env.RELEASE_VERSION }}
+          API_VERSION: ${{ env.API_VERSION }}
           DJANGO_SECRET_KEY: ${{ secrets.DJANGO_SECRET_KEY }}
           DJANGO_SENTRY_DSN: ${{ secrets.DJANGO_SENTRY_DSN }}
           DJANGO_SETTINGS_MODULE: ${{ secrets.DJANGO_SETTINGS_MODULE }}
@@ -1304,6 +1388,7 @@ jobs:
           DJANGO_REDIS_HOST=$DJANGO_REDIS_HOST
           DJANGO_REDIS_PASSWORD=$DJANGO_REDIS_PASSWORD
           DJANGO_RELEASE_VERSION=$DJANGO_RELEASE_VERSION
+          API_VERSION=$API_VERSION
           DJANGO_SECRET_KEY=$DJANGO_SECRET_KEY
           DJANGO_SENTRY_DSN=$DJANGO_SENTRY_DSN
           DJANGO_SETTINGS_MODULE=$DJANGO_SETTINGS_MODULE

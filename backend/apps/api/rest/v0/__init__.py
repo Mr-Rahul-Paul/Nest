@@ -1,5 +1,6 @@
 """OWASP REST API v0."""
 
+import datetime
 from typing import Any
 
 from django.conf import settings
@@ -37,6 +38,7 @@ ROUTERS = {
     "/sponsors": sponsor_router,
 }
 
+api_version = settings.API_VERSION or datetime.datetime.now(tz=datetime.UTC).date().isoformat()
 
 api_settings = {
     "auth": ApiKey(),  # The `api_key` param name is based on the ApiKey class name.
@@ -45,7 +47,7 @@ api_settings = {
     "docs": Swagger(settings={"persistAuthorization": True}),
     "throttle": [AuthRateThrottle("10/s")],
     "title": "OWASP Nest",
-    "version": "0.3.6",
+    "version": api_version,
 }
 
 api_settings_customization: dict[str, Any] = {}

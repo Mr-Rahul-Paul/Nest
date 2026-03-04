@@ -28,6 +28,7 @@ class Base(Configuration):
     IS_TEST_ENVIRONMENT = False
 
     RELEASE_VERSION = values.Value(environ_name="RELEASE_VERSION")
+    API_VERSION = values.Value(environ_name="API_VERSION", default=None)
 
     CSRF_COOKIE_SAMESITE = "Strict"
     CSRF_COOKIE_SECURE = True

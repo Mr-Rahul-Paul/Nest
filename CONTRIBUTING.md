@@ -100,6 +100,12 @@ Before contributing, ensure you have the following installed:
 
 ### Backend
 
+#### `API_VERSION`
+
+- **Description**: The date-based version of the REST API and SDK generated for it.
+- **Format**: `YYYY-MM-DD`
+- **Usage**: Automatically used in CI/CD to determine the OpenAPI spec version and NPM SDK version. Can be set locally to test SDK generation.
+
 #### `DJANGO_ALGOLIA_APPLICATION_ID`
 
 - **Description**: The application ID for Algolia.

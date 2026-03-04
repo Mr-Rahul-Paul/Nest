@@ -114,6 +114,27 @@ index-data:
 	@CMD="python manage.py algolia_update_replicas" $(MAKE) exec-backend-command
 	@CMD="python manage.py algolia_update_synonyms" $(MAKE) exec-backend-command
 
+generate-sdk:
+	@if [ -z "$(API_VERSION)" ]; then \
+		echo "API_VERSION (YYYY-MM-DD) is required" >&2; \
+		exit 1; \
+	fi
+	@if [ -z "$(OPENAPI_SPEC_FILE)" ]; then \
+		echo "OPENAPI_SPEC_FILE (path to openapi.json) is required" >&2; \
+		exit 1; \
+	fi
+	@mkdir -p $(CURDIR)/build
+	@cp $(OPENAPI_SPEC_FILE) $(CURDIR)/build/openapi.json
+	@echo "Generating SDK (version $(API_VERSION))..."
+	@docker run --rm \
+		-v $(CURDIR):/local \
+		openapitools/openapi-generator-cli@v7.2.0 generate \
+		-i "/local/build/openapi.json" \
+		-g typescript-fetch \
+		-o "/local/build/sdk-typescript" \
+		--additional-properties "npmVersion=$$(echo $(API_VERSION) | tr '-' '.'),supportsES6=true"
+	@echo "SDK generated at build/sdk-typescript"
+
 load-data:
 	@echo "Loading Nest data"
 	@CMD="pg_restore -U nest_user_dev -d nest_db_dev < ./backend/data/nest.dump" $(MAKE) exec-db-command
