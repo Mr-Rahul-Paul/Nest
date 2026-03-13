@@ -77,7 +77,7 @@ class TestProjectsHandler:
                     "idx_contributors_count": 5,
                     "idx_forks_count": 3,
                     "idx_stars_count": 10,
-                    "idx_updated_at": test_date.timestamp(),
+                    "idx_updated_at": test_date.isoformat(),
                 }
             ],
             "nbPages": 1,

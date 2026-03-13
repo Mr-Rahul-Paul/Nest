@@ -36,7 +36,7 @@ class TestOrganizationIndexMixin:
     @pytest.mark.parametrize(
         ("created_at_value", "expected_timestamp"),
         [
-            (datetime(2023, 1, 1, tzinfo=UTC), datetime(2023, 1, 1, tzinfo=UTC).timestamp()),
+            (datetime(2023, 1, 1, tzinfo=UTC), datetime(2023, 1, 1, tzinfo=UTC).isoformat()),
             (None, None),
         ],
     )
