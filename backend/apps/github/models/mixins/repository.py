@@ -48,14 +48,14 @@ class RepositoryIndexMixin:
         return self.contributors_count
 
     @property
-    def idx_created_at(self) -> float:
+    def idx_created_at(self) -> str:
         """Get the repository creation timestamp for indexing.
 
         Returns:
-            float: Unix timestamp when the repository was created.
+            str: ISO timestamp when the repository was created.
 
         """
-        return self.created_at.timestamp()
+        return self.created_at.isoformat()
 
     @property
     def idx_description(self) -> str:
@@ -149,14 +149,14 @@ class RepositoryIndexMixin:
         return self.project.nest_key if self.project else ""
 
     @property
-    def idx_pushed_at(self) -> float:
+    def idx_pushed_at(self) -> str:
         """Get the timestamp of the last push to this repository for indexing.
 
         Returns:
-            float: Unix timestamp of the most recent push.
+            str: ISO timestamp of the most recent push.
 
         """
-        return self.pushed_at.timestamp()
+        return self.pushed_at.isoformat()
 
     @property
     def idx_size(self) -> int:
