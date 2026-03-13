@@ -19,7 +19,7 @@ const mockReleases: ReleaseType[] = [
       avatarUrl: 'https://example.com/avatar.png',
       key: 'testuser',
       contributionsCount: 10,
-      createdAt: 0,
+      createdAt: '2025-01-01T00:00:00.000Z',
       followersCount: 5,
       followingCount: 3,
       publicRepositoriesCount: 8,
@@ -33,7 +33,7 @@ describe.each([
   { theme: 'dark', name: 'dark' },
 ])('RecentReleases a11y ($name theme)', ({ theme }) => {
   beforeEach(() => {
-    ;(useTheme as jest.Mock).mockReturnValue({ theme, setTheme: jest.fn() })
+    ; (useTheme as jest.Mock).mockReturnValue({ theme, setTheme: jest.fn() })
     document.documentElement.classList.toggle('dark', theme === 'dark')
   })
   it('should have no accessibility violations with releases', async () => {

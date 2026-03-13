@@ -57,7 +57,7 @@ describe('RepositoryDetailsPage', () => {
   })
 
   test('renders repository details when data is available', async () => {
-    ;(useQuery as unknown as jest.Mock).mockReturnValue({
+    ; (useQuery as unknown as jest.Mock).mockReturnValue({
       data: mockRepositoryData,
       error: null,
     })
@@ -76,7 +76,7 @@ describe('RepositoryDetailsPage', () => {
   })
 
   test('renders error message when GraphQL request fails', async () => {
-    ;(useQuery as unknown as jest.Mock).mockReturnValue({
+    ; (useQuery as unknown as jest.Mock).mockReturnValue({
       data: { repository: null },
       error: mockError,
     })
@@ -143,7 +143,7 @@ describe('RepositoryDetailsPage', () => {
   })
 
   test('Handles case when no data is available', async () => {
-    ;(useQuery as unknown as jest.Mock).mockReturnValue({
+    ; (useQuery as unknown as jest.Mock).mockReturnValue({
       data: { repository: null },
       error: null,
     })
@@ -194,7 +194,7 @@ describe('RepositoryDetailsPage', () => {
   })
 
   test('handles missing repository stats gracefully', async () => {
-    ;(useQuery as unknown as jest.Mock).mockReturnValue({
+    ; (useQuery as unknown as jest.Mock).mockReturnValue({
       data: {
         repository: {
           ...mockRepositoryData.repository,
@@ -238,7 +238,7 @@ describe('RepositoryDetailsPage', () => {
         issues: [
           {
             title: 'Issue without author',
-            createdAt: 1727390000,
+            createdAt: '2024-09-26T22:41:13.000Z',
             url: 'https://github.com/test-org/test-repo/issues/1',
             repositoryName: 'test-repo',
             author: null,
@@ -246,11 +246,11 @@ describe('RepositoryDetailsPage', () => {
         ],
       },
     }
-    ;(useQuery as unknown as jest.Mock).mockReturnValue({
-      data: dataWithNullAuthor,
-      loading: false,
-      error: null,
-    })
+      ; (useQuery as unknown as jest.Mock).mockReturnValue({
+        data: dataWithNullAuthor,
+        loading: false,
+        error: null,
+      })
 
     render(<RepositoryDetailsPage />)
 
@@ -267,11 +267,11 @@ describe('RepositoryDetailsPage', () => {
         issues: null,
       },
     }
-    ;(useQuery as unknown as jest.Mock).mockReturnValue({
-      data: dataWithNullIssues,
-      loading: false,
-      error: null,
-    })
+      ; (useQuery as unknown as jest.Mock).mockReturnValue({
+        data: dataWithNullIssues,
+        loading: false,
+        error: null,
+      })
 
     render(<RepositoryDetailsPage />)
 
@@ -288,11 +288,11 @@ describe('RepositoryDetailsPage', () => {
         recentMilestones: null,
       },
     }
-    ;(useQuery as unknown as jest.Mock).mockReturnValue({
-      data: dataWithNullMilestones,
-      loading: false,
-      error: null,
-    })
+      ; (useQuery as unknown as jest.Mock).mockReturnValue({
+        data: dataWithNullMilestones,
+        loading: false,
+        error: null,
+      })
 
     render(<RepositoryDetailsPage />)
 
@@ -309,11 +309,11 @@ describe('RepositoryDetailsPage', () => {
         releases: null,
       },
     }
-    ;(useQuery as unknown as jest.Mock).mockReturnValue({
-      data: dataWithNullReleases,
-      loading: false,
-      error: null,
-    })
+      ; (useQuery as unknown as jest.Mock).mockReturnValue({
+        data: dataWithNullReleases,
+        loading: false,
+        error: null,
+      })
 
     render(<RepositoryDetailsPage />)
 

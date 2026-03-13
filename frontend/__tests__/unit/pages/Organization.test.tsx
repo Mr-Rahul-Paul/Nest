@@ -31,12 +31,12 @@ jest.mock('components/Pagination', () =>
 describe('Organization', () => {
   let mockRouter: { push: jest.Mock }
   beforeEach(() => {
-    ;(fetchAlgoliaData as jest.Mock).mockResolvedValue({
+    ; (fetchAlgoliaData as jest.Mock).mockResolvedValue({
       hits: mockOrganizationData.hits,
       totalPages: 2,
     })
     mockRouter = { push: jest.fn() }
-    ;(useRouter as jest.Mock).mockReturnValue(mockRouter)
+      ; (useRouter as jest.Mock).mockReturnValue(mockRouter)
   })
 
   afterEach(() => {
@@ -55,10 +55,10 @@ describe('Organization', () => {
 
   test('handles page change correctly', async () => {
     window.scrollTo = jest.fn()
-    ;(fetchAlgoliaData as jest.Mock).mockResolvedValue({
-      hits: mockOrganizationData.hits,
-      totalPages: 2,
-    })
+      ; (fetchAlgoliaData as jest.Mock).mockResolvedValue({
+        hits: mockOrganizationData.hits,
+        totalPages: 2,
+      })
     render(<Organization />)
     await waitFor(() => {
       const nextPageButton = screen.getByText('Next Page')
@@ -122,7 +122,7 @@ describe('Organization', () => {
       ],
       totalPages: 1,
     }
-    ;(fetchAlgoliaData as jest.Mock).mockResolvedValue(mockDataWithMissingFields)
+      ; (fetchAlgoliaData as jest.Mock).mockResolvedValue(mockDataWithMissingFields)
 
     render(<Organization />)
 
@@ -144,7 +144,7 @@ describe('Organization', () => {
           avatarUrl: null,
           collaboratorsCount: 5,
           company: 'Test Company',
-          createdAt: 1596744799,
+          createdAt: '2020-08-06T20:13:19.000Z',
           description: 'Organization with null avatar',
           email: 'test@example.com',
           followersCount: 50,
@@ -152,13 +152,13 @@ describe('Organization', () => {
           login: 'null-avatar-org',
           name: 'Null Avatar Org',
           publicRepositoriesCount: 25,
-          updatedAt: 1727390473,
+          updatedAt: '2024-09-26T22:41:13.000Z',
           url: 'https://github.com/null-avatar-org',
         },
       ],
       totalPages: 1,
     }
-    ;(fetchAlgoliaData as jest.Mock).mockResolvedValue(mockDataWithNullAvatar)
+      ; (fetchAlgoliaData as jest.Mock).mockResolvedValue(mockDataWithNullAvatar)
 
     render(<Organization />)
 
