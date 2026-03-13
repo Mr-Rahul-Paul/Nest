@@ -75,7 +75,7 @@ const ItemCardList = ({
     createdAt: string
     commentsCount: number
     organizationName: string
-    publishedAt: number
+    publishedAt: string
     repositoryName: string
     tagName: string
     openIssuesCount: number

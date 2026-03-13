@@ -23,8 +23,8 @@ type ProjectType = Project | Issue | Committee | Chapter
 export const getFilteredIcons = (project: ProjectType, params: string[]): Icon => {
   const filteredIcons = params.reduce((acc: Icon, key) => {
     if (ICONS[key as IconKeys] && project[key as keyof typeof project] !== undefined) {
-      if (key === 'createdAt') {
-        acc[key] = dayjs(project[key as keyof ProjectType] as unknown as string).fromNow()
+      if (['createdAt', 'updatedAt', 'publishedAt'].includes(key)) {
+        acc[key] = dayjs(project[key as keyof typeof project] as unknown as string).fromNow()
       } else {
         acc[key] = project[key as keyof typeof project] as unknown as number
       }
@@ -52,10 +52,10 @@ export type IndexedObject = {
 export const getCsrfToken = async (): Promise<string> => {
   const csrfToken = document.cookie
     ? document.cookie
-        .split(';')
-        .map((cookie) => cookie.split('='))
-        .find(([key]) => key.trim() === 'csrftoken')?.[1]
-        ?.trim()
+      .split(';')
+      .map((cookie) => cookie.split('='))
+      .find(([key]) => key.trim() === 'csrftoken')?.[1]
+      ?.trim()
     : undefined
 
   if (csrfToken) {
