@@ -1,3 +1,5 @@
+name: nest-local
+
 services:
   backend:
     container_name: nest-backend
