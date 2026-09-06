@@ -51,4 +51,4 @@ extensions = [
 if not settings.DEBUG and not settings.IS_FUZZ_ENVIRONMENT:
     extensions.append(DisableIntrospection())
 
-schema = strawberry.Schema(extensions=extensions, mutation=Mutation, query=Query)
+schema = strawberry.Schema(extensions=extensions, mutation=Mutation, query=Query)  # type: ignore[arg-type]

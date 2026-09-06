@@ -1,6 +1,5 @@
-# Docker Hardened Images (DHI) - requires: docker login dhi.io
-# Use -dev variant for builder stage (includes build tools and shell)
-FROM dhi.io/python:3.13-dev AS builder
+# python:slim is used as base image to keep the image size small
+FROM python:3.13.7-slim AS builder
 
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
@@ -53,9 +52,8 @@ COPY templates templates
 COPY apps apps
 COPY tests/unit tests/unit
 
-# Use -dev variant for runtime stage to allow installing runtime dependencies
-# Still hardened, just includes shell and package manager for flexibility
-FROM dhi.io/python:3.13-dev
+# Runtime stage using python:slim
+FROM python:3.13.7-slim
 
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
