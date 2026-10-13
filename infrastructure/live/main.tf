@@ -180,7 +180,7 @@ module "parameters" {
   source = "../modules/parameters"
 
   common_tags                    = local.common_tags
-  db_password_arn                = module.database.db_password_arn
+  db_password_arn                = "${module.database.db_credentials_secret_arn}:password::"
   django_configuration           = var.django_configuration
   django_allowed_hosts           = var.domain_name
   django_allowed_origins         = "https://${var.domain_name}"
@@ -199,7 +199,7 @@ module "parameters" {
   next_server_graphql_url        = "https://${var.domain_name}/graphql/"
   nextauth_url                   = "https://${var.domain_name}"
   project_name                   = var.project_name
-  redis_password_arn             = module.cache.redis_password_arn
+  redis_password_arn             = module.cache.redis_password_secret_arn
   secret_recovery_window_in_days = var.secret_recovery_window_in_days
   slack_bot_token_suffix         = var.slack_bot_token_suffix
 }
